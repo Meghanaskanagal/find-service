@@ -4,9 +4,9 @@ metadata:
   name: build-and-deploy
 spec:
   resources:
-    - name: api-repo
+    - name: find-repo
       type: git
-    - name: api-image
+    - name: find-image
       type: image
     - name: ui-repo
       type: git
@@ -16,16 +16,16 @@ spec:
   tasks:
     - name: build-api
       taskRef:
-        name: buidlah
-        type: ClusterTask
+        name: buildah
+        kind: ClusterTask
         
       resources:
         inputs:
           - name: source
-            resource: api-repo
+            resource: find-repo
         outputs:
           - name: image
-            resource: api-image
+            resource: find-image
       params:
         - name: TLSVERIFY
           value: "false"
@@ -36,7 +36,7 @@ spec:
       resources:
         inputs:
           - name: source
-            resource: api-repo
+            resource: find-repo
       runAfter:
         - build-api
 
@@ -46,7 +46,7 @@ spec:
       resources:
         inputs:
           - name: image
-            resource: api-image
+            resource: find-image
       params:
         - name: deployment
           value: "api"
@@ -55,8 +55,8 @@ spec:
 
     - name: build-ui
       taskRef:
-        name: s2i-python-3
-        type: ClusterTask
+        name: s2i-nodejs
+        kind: ClusterTask
       resources:
         inputs:
           - name: source
